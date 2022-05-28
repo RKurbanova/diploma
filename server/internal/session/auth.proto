@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// в корне проекта (там где go.mod)
+// protoc -I internal/session/ internal/session/auth.proto --go_out=plugins=grpc:./internal/session
+
+package session;
+
+message AuthSession {
+    string ID     = 1;
+    uint32 UserID = 2;
+}
+
+message AuthUserIn {
+    uint32 UserID = 1;
+}
+
+message AuthCheckIn {
+    string SessKey = 1;
+}
+
+message AuthNothing {
+    bool Nothing = 1;
+}
+
+service Auth {
+    rpc Check (AuthCheckIn) returns (AuthSession) {}
+    rpc Create (AuthUserIn) returns (AuthSession) {}
+    rpc DestroyCurrent (AuthSession) returns (AuthNothing) {}
+}
