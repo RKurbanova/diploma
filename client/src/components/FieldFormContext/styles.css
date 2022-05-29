@@ -1,0 +1,9 @@
+.label-kek {
+  font-weight: bolder;
+}
+
+.iconInfo-kek {
+  padding-left: 10px;
+  color: var(--primary-color);
+  font-size: 1.4em;
+}
