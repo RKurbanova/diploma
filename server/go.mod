@@ -5,6 +5,8 @@ go 1.17
 require gorm.io/gorm v1.23.5
 
 require (
+	github.com/felixge/httpsnoop v1.0.1 // indirect
+	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -19,7 +21,6 @@ require (
 
 require (
 	github.com/gorilla/mux v1.8.0
-	github.com/gorilla/schema v1.2.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/lib/pq v1.10.6

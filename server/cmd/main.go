@@ -59,18 +59,14 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+	r.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	})
 	r.HandleFunc("/user", userHandler.Get).Methods("GET")
-	// r.HandleFunc("/users", userHandler.Get).Methods("GET")
-	// r.HandleFunc("/user/{id}", userHandler.GetById).Methods("GET")
-	// r.HandleFunc("/user/{id}", userHandler.UpdateUser).Methods("POST")
-	// r.HandleFunc("/user/{id}/block", userHandler.Block).Methods("POST")
-	// r.HandleFunc("/user/{id}/set_role", userHandler.SetRole).Methods("POST")
-	// r.HandleFunc("/user/{id}/to_promotion", userHandler.ToPromotion).Methods("POST")
-	// r.HandleFunc("/user/{id}/reject_promote", userHandler.RejectPromote).Methods("POST")
-	// r.HandleFunc("/user/{id}/promote", userHandler.Promote).Methods("POST")
-	// r.HandleFunc("/user/{id}/withdraw", userHandler.WithdrawMoney).Methods("POST")
-	// r.HandleFunc("/user/{id}/insert_money", userHandler.InsertMoney).Methods("POST")
-	// Chat?)))
+	r.HandleFunc("/users", userHandler.GetAll).Methods("GET")
+	r.HandleFunc("/user/{id}", userHandler.GetByID).Methods("GET")
+	r.HandleFunc("/user/{id}", userHandler.Update).Methods("POST")
 	r.HandleFunc("/login", userHandler.Login).Methods("POST")
 	r.HandleFunc("/register", userHandler.Register).Methods("POST")
 	r.HandleFunc("/logout", userHandler.Logout).Methods("POST")
@@ -85,7 +81,8 @@ func main() {
 	// r.HandleFunc("/deal/{id}/freeze", dealHandler.Freeze).Methods("POST")
 	// r.HandleFunc("/deal/{id}/cancel", dealHandler.Cancel).Methods("POST")
 	// r.HandleFunc("/deal/{id}/finish", dealHandler.Finish).Methods("POST")
-	// r.HandleFunc("/deal/{id}/insert_money", dealHandler.InsertMoney).Methods("POST")
+	// r.HandleFunc("/deal/{id}/invest", dealHandler.Invest).Methods("POST")
+	// r.HandleFunc("/deal/{id}/insert_profit", dealHandler.InsertProfit).Methods("POST")
 	// r.HandleFunc("/deal/{id}/stage/{stageId}/submit", dealHandler.StageSubmit).Methods("POST")
 	// r.HandleFunc("/deal/{id}/stage/{stageId}", dealHandler.StageUpdate).Methods("POST")
 	// r.HandleFunc("/deal/{id}/stage/{stageId}/approve", dealHandler.StageApprove).Methods("POST")
@@ -93,6 +90,7 @@ func main() {
 
 	router := middleware.Auth(sm, r)
 	router = middleware.Panic(router)
+	router = middleware.Cors(router)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", PORT), router)
 

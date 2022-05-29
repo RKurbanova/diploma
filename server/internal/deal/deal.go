@@ -6,8 +6,20 @@ import (
 )
 
 type RawUser struct {
-	Login    string
-	Password string
+	Login         string
+	Password      string
+	FirstName     string
+	LastName      string
+	Patronymic    string
+	Email         string
+	Birthday      string
+	Phone         string
+	Passport      string
+	Balance       float64
+	WantPromotion bool
+	IsPromoted    bool
+	IsBlocked     bool
+	Role          int
 }
 
 // TODO move somehow to user

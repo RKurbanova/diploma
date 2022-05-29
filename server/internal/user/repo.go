@@ -16,6 +16,15 @@ func NewRepository(db *gorm.DB) *Repo {
 	return &Repo{DB: db}
 }
 
+func (repo *Repo) GetAll() ([]*deal.User, error) {
+	users := []*deal.User{}
+	result := repo.DB.Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
+}
+
 func (repo *Repo) GetByID(id uint) (*deal.User, error) {
 	user := &deal.User{}
 	err := repo.DB.First(&user, "id = ?", id).Error
@@ -50,16 +59,13 @@ func (repo *Repo) Create(user *deal.User) (*deal.User, error) {
 	return user, nil
 }
 
-// func (repo *Repo) Update(elem *User) (int64, error) {
-// 	res := repo.DB.Model(&elem).Updates(map[string]interface{}{
-// 		"title":       elem.Title,
-// 		"description": elem.Description,
-// 	})
-// 	if res.Error != nil {
-// 		return 0, res.Error
-// 	}
-// 	return res.RowsAffected, nil
-// }
+func (repo *Repo) Update(elem *deal.User) (int64, error) {
+	res := repo.DB.Model(&elem).Updates(elem)
+	if res.Error != nil {
+		return 0, res.Error
+	}
+	return res.RowsAffected, nil
+}
 
 func (repo *Repo) Delete(id uint) (int64, error) {
 	res := repo.DB.Delete(&deal.User{}, id)

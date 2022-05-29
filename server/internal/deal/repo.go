@@ -14,6 +14,7 @@ func NewRepository(db *gorm.DB) *Repo {
 	db.AutoMigrate(&Rate{})
 	db.AutoMigrate(&Comment{})
 	db.AutoMigrate(&Stage{})
+	db.AutoMigrate(&Investment{})
 
 	return &Repo{DB: db}
 }
