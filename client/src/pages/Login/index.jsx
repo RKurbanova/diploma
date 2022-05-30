@@ -1,4 +1,5 @@
 import {
+    Link,
     useNavigate
 } from "react-router-dom";
 import { usePostLoginMutation } from "../../queries/user"
@@ -79,6 +80,7 @@ export default function LoginPage({user}) {
                     >
                         Войти
                     </Button>
+                    <Link to='/register'>Нет аккаунта?</Link>
                 </Form>
             )}
         </Formik>

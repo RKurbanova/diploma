@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import Header from "./components/Header";
 import Sider from "./components/Sider";
 import ProfilePage from "./pages/Profile";
+import User from "./pages/User";
 
 const { Content } = Layout;
 
@@ -30,9 +31,9 @@ function App() {
   let {data: user, isLoading, isError} = useGetUserQuery()
 
   user = isError ? undefined : user
-
+  
   useEffect(() => {
-    if (isError && !location.pathname.includes('login') & !location.pathname.includes('register')) {
+    if (isError && !location.pathname.includes('login') && !location.pathname.includes('register')) {
       navigate('/login')
     }
   }, [isError, isLoading, location.pathname, navigate, user])
@@ -48,9 +49,20 @@ function App() {
         <Sider user={user} />
         <Content className="content">
           <Routes>
-            <Route path="/" element={<CatalogPage user={user} />} />
-            <Route path="/profile" element={<ProfilePage user={user} />} />
-            <Route path="/deal/:id" element={<DealPage user={user} />} />
+            {
+              user ? <>
+                <Route path="/" element={<CatalogPage user={user} />} />
+                <Route path="/profile" element={<ProfilePage user={user} />} />
+                <Route path="/deal/:id" element={<DealPage user={user} />} />
+                <Route path="/user/:id/edit" element={<div></div>} />
+                <Route path="/user/:id" element={<User user={user} />} />
+              </>: null
+            }
+            {
+              user && user.role === 2 ? <>
+                <Route path="/users" element={<div></div>} />
+              </>: null
+            }
             <Route path="/login" element={<LoginPage user={user} />} />
             <Route path="/register" element={<RegisterPage user={user} />} />
           </Routes>

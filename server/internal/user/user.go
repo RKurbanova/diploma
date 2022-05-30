@@ -13,8 +13,16 @@ const (
 
 func RawUserToUser(rawUser *deal.RawUser) *deal.User {
 	return &deal.User{
-		Login:    rawUser.Login,
-		Password: rawUser.Password,
+		Login:      rawUser.Login,
+		Password:   rawUser.Password,
+		FirstName:  rawUser.FirstName,
+		LastName:   rawUser.LastName,
+		Patronymic: rawUser.Patronymic,
+		Email:      rawUser.Email,
+		Birthday:   rawUser.Birthday,
+		Phone:      rawUser.Phone,
+		Passport:   rawUser.Passport,
+		Balance:    rawUser.Balance,
 	}
 }
 
@@ -27,7 +35,7 @@ var (
 func (repo *Repo) Authorize(login, pass string) (*deal.User, error) {
 	user, err := repo.GetByLogin(login)
 
-	if err != nil {
+	if err != nil || user.IsBlocked {
 		return nil, ErrNoUser
 	}
 

@@ -2,7 +2,8 @@ import { Space, Layout, PageHeader, Avatar, Badge} from "antd";
 import {
     ExperimentOutlined,
     UserOutlined
-  } from '@ant-design/icons';
+} from '@ant-design/icons';
+
 import {
     useNavigate,
     Link
@@ -24,13 +25,16 @@ export default function Header({user}) {
             <Space>
                 {
                     user ?
-                    <Link to="/profile">
-                        <Badge count={1}>
-                            <Avatar icon={<UserOutlined />} />
-                        </Badge>
-                    </Link>
-                    :
-                    null
+                        <Space>
+                            <p style={{marginBottom: 0}}>{user.lastname} {user.firstname} {user.patronymic}</p>
+                            <Link to="/profile">
+                                <Badge count={user.wantpromotion ? 1 : 0}>
+                                    <Avatar icon={<UserOutlined />} />
+                                </Badge>
+                            </Link>
+                        </Space>
+                        :
+                        null
                 }
             </Space>
         </Space>

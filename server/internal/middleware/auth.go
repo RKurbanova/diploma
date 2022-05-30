@@ -19,7 +19,7 @@ var (
 
 func Auth(sm *session.Manager, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, ok := noAuthUrls[r.URL.Path]; ok {
+		if _, ok := noAuthUrls[r.URL.Path]; ok || r.Method == http.MethodOptions {
 			next.ServeHTTP(w, r)
 			return
 		}

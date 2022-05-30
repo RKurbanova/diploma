@@ -16,9 +16,9 @@ type RawUser struct {
 	Phone         string
 	Passport      string
 	Balance       float64
-	WantPromotion bool
-	IsPromoted    bool
-	IsBlocked     bool
+	WantPromotion bool `json:"wantpromotion"`
+	IsPromoted    bool `json:"ispromoted"`
+	IsBlocked     bool `json:"isblocked"`
 	Role          int
 }
 
@@ -35,9 +35,9 @@ type User struct {
 	Phone           string
 	Passport        string
 	Balance         float64
-	WantPromotion   bool
-	IsPromoted      bool
-	IsBlocked       bool
+	WantPromotion   bool `json:"wantpromotion"`
+	IsPromoted      bool `json:"ispromoted"`
+	IsBlocked       bool `json:"isblocked"`
 	Role            int
 	DealsOwned      []*Deal
 	DealsInvested   []*Deal `gorm:"many2many:user_deal_invested;"`
