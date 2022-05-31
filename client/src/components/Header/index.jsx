@@ -26,9 +26,9 @@ export default function Header({user}) {
                 {
                     user ?
                         <Space>
-                            <p style={{marginBottom: 0}}>{user.lastname} {user.firstname} {user.patronymic}</p>
+                            <p style={{marginBottom: 0}}>{user.LastName} {user.FirstName} {user.Patronymic}</p>
                             <Link to="/profile">
-                                <Badge count={user.wantpromotion ? 1 : 0}>
+                                <Badge count={user.WantPromotion ? 1 : 0}>
                                     <Avatar icon={<UserOutlined />} />
                                 </Badge>
                             </Link>

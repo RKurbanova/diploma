@@ -3,6 +3,7 @@ import { usePostLogoutMutation, usePostUpdateUserMutation } from '../../queries/
 import { Space, PageHeader, Button} from "antd";
 import './index.css'
 import UserCard from '../../components/UserCard';
+import { Link } from 'react-router-dom';
 
 export default function ProfilePage({user}) {
     const [logout] = usePostLogoutMutation();
@@ -15,7 +16,12 @@ export default function ProfilePage({user}) {
                 className="site-page-header"
                 title={<span className="profile-header">Профиль</span>}
             />
-            <Button type='danger' onClick={logout}>Выйти</Button>
+            <Space>
+                <Link to={`/user/${user.ID}/edit`}>
+                    <Button type='primary'>Редактировать</Button>
+                </Link>
+                <Button type='danger' onClick={logout}>Выйти</Button>
+            </Space>
         </Space>
 
         <UserCard user={user} currentuser={user} updateUser={updateUser} isLoading={isLoading} />

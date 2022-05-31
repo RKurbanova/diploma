@@ -74,7 +74,7 @@ func main() {
 	r.HandleFunc("/deals", dealHandler.List).Methods("GET")
 	r.HandleFunc("/deal/new", dealHandler.Create).Methods("POST")
 	r.HandleFunc("/deal/{id}", dealHandler.Update).Methods("POST")
-	// r.HandleFunc("/deal/{id}", dealHandler.Get).Methods("GET")
+	r.HandleFunc("/deal/{id}", dealHandler.GetByID).Methods("GET")
 	// r.HandleFunc("/deal/{id}/comment", dealHandler.Comment).Methods("POST")
 	// r.HandleFunc("/deal/{id}/approve", dealHandler.Approve).Methods("POST")
 	// r.HandleFunc("/deal/{id}/start", dealHandler.Start).Methods("POST")

@@ -13,6 +13,8 @@ function FieldFormikContext({
   name,
   label,
   colon,
+  nest,
+  field,
   extra,
   noValue,
   showHelp,
@@ -40,36 +42,28 @@ function FieldFormikContext({
     isSubmitting,
   } = useFormikContext()
 
-  const hasError = (touched?.[name]) && (errors?.[name])
+  const hasError = (nest ? touched?.[nest]?.[name]?.[field] : touched?.[name]) && (nest ? errors?.[nest]?.[name]?.[field] : errors?.[name])
   const valueProp = valuePropName ? valuePropName : 'value'
-  const error = errors?.[name]
+  const error = (nest ? errors?.[nest]?.[name]?.[field] : errors?.[name])
   const Component = renderComponent
-  const handleBlur = useCallback(() => setFieldTouched(`['${name}']`), [setFieldTouched, name])
+  const handleBlur = useCallback(() => setFieldTouched(nest ? `${nest}.${name}.${field}` : `['${name}']`), [setFieldTouched, nest, name])
 
   const handleChange = useCallback(
     async (event = null) => {
       const value = nonVerboseEvent ? event : event?.target?.[valueProp]
       const processedValue = replaceEmptyString && !value ? emptyStringReplacement : value
 
-      await setFieldValue(`['${name}']`, processedValue)
-      setFieldTouched(`['${name}']`)
+      await setFieldValue(nest ? `${nest}.${name}.${field}` : `['${name}']`, processedValue)
+      setFieldTouched(nest ? `${nest}.${name}.${field}` : `['${name}']`)
     },
-    [
-      setFieldValue,
-      setFieldTouched,
-      name,
-      nonVerboseEvent,
-      valueProp,
-      replaceEmptyString,
-      emptyStringReplacement,
-    ]
+    [nonVerboseEvent, valueProp, replaceEmptyString, emptyStringReplacement, setFieldValue, nest, name, field, setFieldTouched]
   )
 
   const preparedProps = {
     disabled: isSubmitting,
     onBlur: handleBlur,
     onChange: onChange || handleChange,
-    [valueProp]: values?.[name],
+    [valueProp]: nest ? values?.[nest]?.[name]?.[field] : values?.[name],
     id,
   }
 

@@ -28,7 +28,7 @@ func (repo *Repo) GetAll() ([]*Deal, error) {
 	return deals, nil
 }
 
-func (repo *Repo) GetByID(id int64) (*Deal, error) {
+func (repo *Repo) GetByID(id uint) (*Deal, error) {
 	deal := &Deal{}
 	err := repo.DB.First(&deal, "id = ?", id).Error
 	if err != nil {
@@ -45,11 +45,8 @@ func (repo *Repo) Create(elem *Deal) (int64, error) {
 	return int64(elem.ID), nil
 }
 
-func (repo *Repo) Update(elem *Deal) (int64, error) {
-	res := repo.DB.Model(&elem).Updates(map[string]interface{}{
-		"title":       elem.Title,
-		"description": elem.Description,
-	})
+func (repo *Repo) Update(elem *Deal, toUpdate []string) (int64, error) {
+	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
 	}

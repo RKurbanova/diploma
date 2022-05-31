@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 
-export default function Sider() {
+export default function Sider({children}) {
     return  <Layout.Sider className="sider">
-        Sider
+        {children}
     </Layout.Sider>
 }

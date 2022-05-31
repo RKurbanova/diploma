@@ -59,8 +59,8 @@ func (repo *Repo) Create(user *deal.User) (*deal.User, error) {
 	return user, nil
 }
 
-func (repo *Repo) Update(elem *deal.User) (int64, error) {
-	res := repo.DB.Model(&elem).Updates(elem)
+func (repo *Repo) Update(elem *deal.User, toUpdate []string) (int64, error) {
+	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
 	}

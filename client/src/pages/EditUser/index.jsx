@@ -1,14 +1,14 @@
 import {
     Link,
+    useParams,
     useNavigate
 } from "react-router-dom";
-import { usePostRegisterMutation } from "../../queries/user"
+import { usePostUpdateUserMutation, useGetUserByIdQuery } from '../../queries/user'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
  
-import './index.css'
-import { Button, Input, Form, Space } from "antd";
+import { Button, Input, Form, Space, Spin } from "antd";
 import FieldFormikContext from "../../components/FieldFormContext";
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
@@ -19,16 +19,7 @@ const allowedBirthDate = new Date()
 allowedBirthDate.setFullYear(allowedBirthDate.getFullYear() - 18)
 const birthDateRegExp = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
 
-const SignupSchema = Yup.object().shape({
-    Login: Yup.string()
-        .min(2, 'Логин очень короткий')
-        .max(50, 'Логин очень длинный')
-        .required('Логин обязателен'),
-    Password: Yup.string()
-        .min(2, 'Пароль очень короткий')
-        .max(50, 'Пароль очень длинный')
-        .matches(/[a-zA-Z0-1]/, 'Пароль может содержать только латинские буквы и цифры')
-        .required('Пароль обязателен'),
+const EditSchema = Yup.object().shape({
     FirstName: Yup.string()
         .min(2, 'Имя очень короткое')
         .max(50, 'Имя очень длинное')
@@ -57,53 +48,49 @@ const SignupSchema = Yup.object().shape({
     Passport: Yup.string().matches(passportRegExp, 'Номер и серия паспорта должны быть в формате - серия:номер').required('Паспорт обязателен')
 });
 
-export default function RegisterPage({user}) {
-    const navigate = useNavigate();
-    const [register] = usePostRegisterMutation()
+export default function EditUserPage({user: currentUser}) {
+    const {id} = useParams()
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        if (user) {
-            navigate('/')
-        }
-    }, [navigate, user])
+    const canSee = currentUser.ID === id || currentUser.Role === 2
+    console.log('can', canSee, currentUser.ID, id, currentUser.Role)
 
-    const handleRegister = useCallback(async (data, { setFieldError }) => {
-        const result = await register(data)
-
+    
+    const {data: user, isLoading: isUserLoading }= useGetUserByIdQuery({ID: id}, {
+        skip: !canSee
+    })
+    
+    const [updateUser] = usePostUpdateUserMutation()
+    
+    const handleEdit = useCallback(async (data, { setFieldError }) => {
+        const result = await updateUser(data)
+        
         if (result.error) {
-            setFieldError('general', 'Пользователь с такими данными уже существует')
+            setFieldError('general', 'Что-то пошло не так')
         }
-    }, [register])
+    }, [updateUser])
+    
+    if (!canSee) {
+        return <div style={{padding: '10px', color: 'red'}}>У вас нет доступа к этой странице</div>
+    }
+
+    if (isUserLoading) {
+        return <Spin className="main-spinner" size="large" />
+    }
 
     return <Space className="register-wrapper" direction="vertical">
-        <h2>Зарегистрировать аккаунт</h2>
+        <h2>Редактировать профиль</h2>
         <Formik
-            initialValues={SignupSchema.cast()}
-            validationSchema={SignupSchema}
-            onSubmit={handleRegister}
+            initialValues={user}
+            validationSchema={EditSchema}
+            onSubmit={handleEdit}
         >
-            {({ handleSubmit, isSubmitting, isValid, dirty, errors, values }) => (
+            {({ handleSubmit, isSubmitting, isValid, dirty, errors }) => (
                 <Form
                     className="register-form"
                     onFinish={handleSubmit}
                     layout='vertical'
                 >
-                    <FieldFormikContext
-                        id="Login"
-                        name="Login"
-                        label='Логин'
-                        placeholder='Введите логин'
-                        renderComponent={Input}
-                        maxLength={50}
-                    />
-                    <FieldFormikContext
-                        id="Password"
-                        name="Password"
-                        label='Пароль'
-                        placeholder='Введите пароль'
-                        renderComponent={Input.Password}
-                        maxLength={50}
-                    />
                     <FieldFormikContext
                         id="FirstName"
                         name="FirstName"
@@ -158,15 +145,17 @@ export default function RegisterPage({user}) {
                     />
 
                     {errors.general ? <p style={{ color: 'red' }}>{errors.general}</p> : null}
-                    <Button
-                        type='primary'
-                        htmlType='submit'
-                        loading={isSubmitting}
-                        disabled={!(dirty && isValid)}
-                    >
-                        Зарегистрировать
-                    </Button>
-                    <Link to='/login'>Уже есть аккаунт?</Link>
+                    <Space>
+                        <Button type='danger' onClick={() => navigate(-1)}>Отмена</Button>
+                        <Button
+                            type='primary'
+                            htmlType='submit'
+                            loading={isSubmitting}
+                            disabled={!(dirty && isValid)}
+                        >
+                            Изменить
+                        </Button>
+                    </Space>
                 </Form>
             )}
         </Formik>

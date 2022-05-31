@@ -12,7 +12,7 @@ let objectKeysToLowerCase = function (input) {
   }, {});
 };
 
-const transformResponse = (response) => objectKeysToLowerCase(response)
+const transformResponse = (response) => response
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -24,8 +24,13 @@ export const userApi = createApi({
       providesTags: ['GetUser'],
       transformResponse
     }),
+    getAllUsers: builder.query({
+      query: () => `users`,
+      providesTags: ['GetUser'],
+      transformResponse
+    }),
     getUserById: builder.query({
-      query: ({id}) => `user/${id}`,
+      query: ({ID}) => `user/${ID}`,
       providesTags: ['GetUser'],
       transformResponse
     }),
@@ -55,13 +60,24 @@ export const userApi = createApi({
     }),
     postUpdateUser: builder.mutation({
       query: (body) => ({
-        url: `user/${body.id}`,
+        url: `user/${body.ID}`,
         method: 'POST',
-        body,
+        body: {
+          ...body,
+          fieldsToUpdate: Object.keys(body)
+        },
       }),
       invalidatesTags: (result, error, arg) => error ? [] : ['GetUser'],
     }),
   }),
 })
 
-export const { useGetUserQuery, usePostLoginMutation, usePostRegisterMutation, usePostLogoutMutation, usePostUpdateUserMutation, useGetUserByIdQuery } = userApi
+export const {
+  useGetUserQuery,
+  useGetAllUsersQuery,
+  usePostLoginMutation,
+  usePostRegisterMutation,
+  usePostLogoutMutation,
+  usePostUpdateUserMutation,
+  useGetUserByIdQuery
+} = userApi

@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 export default function User({user: currentUser}) {
     const {id} = useParams()
 
-    const {data: user, isLoading: isUserLoading, isError: isUserError }= useGetUserByIdQuery({id})
+    const {data: user, isLoading: isUserLoading, isError: isUserError }= useGetUserByIdQuery({ID: id})
 
     const [updateUser, {isLoading}] = usePostUpdateUserMutation()
 

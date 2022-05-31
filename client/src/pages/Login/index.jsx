@@ -12,11 +12,11 @@ import { Button, Input, Form, Space } from "antd";
 import FieldFormikContext from "../../components/FieldFormContext";
 
 const SigninSchema = Yup.object().shape({
-  login: Yup.string()
+  Login: Yup.string()
     .min(2, 'Логин очень короткий')
     .max(50, 'Логин очень длинный')
     .required('Логин обязателен'),
-  password: Yup.string()
+  Password: Yup.string()
     .min(2, 'Пароль очень короткий')
     .max(50, 'Пароль очень длинный')
     .matches(/[a-zA-Z0-1]/, 'Пароль может содержать только латинские буквы и цифры')
@@ -55,16 +55,16 @@ export default function LoginPage({user}) {
                     layout='vertical'
                 >
                     <FieldFormikContext
-                        id="login"
-                        name="login"
+                        id="Login"
+                        name="Login"
                         label='Логин'
                         placeholder='Введите логин'
                         renderComponent={Input}
                         maxLength={50}
                     />
                     <FieldFormikContext
-                        id="password"
-                        name="password"
+                        id="Password"
+                        name="Password"
                         label='Пароль'
                         placeholder='Введите пароль'
                         renderComponent={Input.Password}
