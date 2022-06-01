@@ -21,7 +21,7 @@ export const dealApi = createApi({
   endpoints: (builder) => ({
     getAllDeals: builder.query({
       query: () => `deals`,
-      providesTags: ['GetUsGetDealer'],
+      providesTags: ['GetDeal'],
       transformResponse
     }),
     getDealById: builder.query({
@@ -39,7 +39,18 @@ export const dealApi = createApi({
     }),
     postUpdateDeal: builder.mutation({
       query: (body) => ({
-        url: `user/${body.ID}`,
+        url: `deal/${body.ID}`,
+        method: 'POST',
+        body: {
+          ...body,
+          fieldsToUpdate: Object.keys(body)
+        },
+      }),
+      invalidatesTags: (result, error, arg) => error ? [] : ['GetDeal'],
+    }),
+    postUpdateStage: builder.mutation({
+      query: (body) => ({
+        url: `stage/${body.ID}`,
         method: 'POST',
         body: {
           ...body,
@@ -55,5 +66,6 @@ export const {
   useGetAllDealsQuery,
   useGetDealByIdQuery,
   usePostCreateDealMutation,
-  usePostUpdateDealMutation
+  usePostUpdateDealMutation,
+  usePostUpdateStageMutation
 } = dealApi

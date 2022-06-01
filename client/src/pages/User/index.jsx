@@ -1,6 +1,6 @@
 import { usePostUpdateUserMutation, useGetUserByIdQuery } from '../../queries/user'
 
-import { Space, PageHeader, Spin } from "antd";
+import { Space, PageHeader, Spin, Result } from "antd";
 import './index.css'
 import UserCard from '../../components/UserCard';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ export default function User({user: currentUser}) {
     }
 
     if (isUserError) {
-        return <div style={{padding: '10px', color: 'red'}}>Такого пользователя не существует</div>
+        return <Result status="404" title="404" subTitle="Такого пользователя не существует" />
     }
 
     return <Space style={{padding: '20px', width: '100%'}} direction='vertical'>

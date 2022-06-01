@@ -53,12 +53,14 @@ func (h *DealHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var deal deal.Deal
 	err := decoder.Decode(&deal)
 	if err != nil {
+		print("whyy", err.Error())
 		http.Error(w, `Bad data`, http.StatusBadRequest)
 		return
 	}
 
 	id, err := h.DealRepo.Create(&deal)
 	if err != nil {
+		print("whyy", err.Error())
 		http.Error(w, `DB err`, http.StatusInternalServerError)
 		return
 	}
@@ -67,6 +69,49 @@ func (h *DealHandler) Create(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *DealHandler) UpdateStage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		http.Error(w, `Bad id`, http.StatusBadRequest)
+		return
+	}
+
+	data, err := ioutil.ReadAll(r.Body)
+	reader1 := bytes.NewReader(data)
+	reader2 := bytes.NewReader(data)
+
+	decoder1 := json.NewDecoder(reader1)
+	decoder2 := json.NewDecoder(reader2)
+	var stage deal.Stage
+
+	err = decoder1.Decode(&stage)
+	if err != nil {
+		http.Error(w, `Bad data`, http.StatusBadRequest)
+		return
+	}
+	var toUpdate ToUpdate
+
+	err = decoder2.Decode(&toUpdate)
+
+	fmt.Print(toUpdate.FieldsToUpdate)
+
+	if err != nil {
+		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
+		return
+	}
+
+	stage.ID = uint(id)
+
+	u, err := h.DealRepo.UpdateStage(&stage, toUpdate.FieldsToUpdate)
+
+	if err != nil {
+		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
+		return
+	}
+
+	SendJSONResponse(w, u)
+}
 func (h *DealHandler) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)

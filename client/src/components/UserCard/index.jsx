@@ -1,4 +1,5 @@
-import { Space, Tag, Button, Typography} from "antd";
+import { Space, Tag, Button, Typography, InputNumber} from "antd";
+import { useState } from "react";
 import SmallUserCard from "../SmallUserCard";
 
 const { Paragraph } = Typography;
@@ -10,6 +11,8 @@ const roleToString = [
 ]
 
 export default function UserCard({user, currentuser, updateUser, isLoading}) {
+    const [loadBalance, setLoadBalance] = useState(0)
+    const [unloadBalance, setUnloadBalance] = useState(0)
     const isDifferentUser = currentuser.ID !== user.ID
     const isAdmin = currentuser.Role === 2
     const isUser = currentuser.Role === 0
@@ -31,6 +34,20 @@ export default function UserCard({user, currentuser, updateUser, isLoading}) {
         {!isDifferentUser && !user.IsPromoted && user.WantPromotion ? <Tag color="#ff4d4f">
             Ожидается подтверждение как исполнителя проекта или сделки
             </Tag> : null}
+        {!isDifferentUser ?
+            <>  
+                <InputNumber min={100} disabled={isLoading} value={loadBalance} onChange={(e) => setLoadBalance(e)} size="large" placeholder="На пополнение" />
+                <Button onClick={() => updateUser({ID: user.ID, Balance: user.Balance + loadBalance })} loading={isLoading} disabled={isLoading}>
+                    Пополнить баланс
+                </Button>
+            </> : null}
+        {!isDifferentUser && user.Balance >= 100 ?
+            <>  
+                <InputNumber min={100} max={user.Balance} disabled={isLoading} value={unloadBalance} onChange={(e) => setUnloadBalance(e)} size="large" placeholder="На вывод" />
+                <Button onClick={() => updateUser({ID: user.ID, Balance: user.Balance - unloadBalance })} loading={isLoading} disabled={isLoading}>
+                    Вывести баланс
+                </Button>
+            </> : null}
         {!isDifferentUser && !user.IsPromoted && !user.WantPromotion ?
             <Button onClick={() => updateUser({ID: user.ID, WantPromotion:true })} loading={isLoading} disabled={isLoading}>
                 Стать исполнитель проекта или сделки</Button> : null}

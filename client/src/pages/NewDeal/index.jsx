@@ -1,6 +1,9 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import {
+    useNavigate
+} from "react-router-dom";
  
 import './index.css'
 import { Button, Input, Form, Space, Tag } from "antd";
@@ -10,14 +13,19 @@ import {
     PlusOutlined
 } from '@ant-design/icons';
 import UploadImage from "../../components/UploadImage";
+import { usePostCreateDealMutation } from '../../queries/deal';
 
 
 const allowedDate = new Date()
 const finishDateRegExp = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
 const StageSchema = Yup.object().shape({
+    Title: Yup.string()
+        .min(2, 'Название очень короткое')
+        .max(250, 'Название очень длинное')
+        .required('Название обязательно'),
     Description: Yup.string()
         .min(2, 'Описание очень короткое')
-        .max(250, 'Описание очень длинное')
+        .max(500, 'Описание очень длинное')
         .required('Описание обязательно'),
     MoneyGoal: Yup.number()
         .required('Цель обязательна'),
@@ -56,14 +64,18 @@ const DealSchema = Yup.object().shape({
 
 
 
-export default function NewDealPage() {
+export default function NewDealPage({user}) {
+    const navigate = useNavigate()
+    const [createDeal] = usePostCreateDealMutation()
     const [fileList, setFileList] = useState([])
     const [stagesAmount, setStagesAmount] = useState(0)
 
     const handleCreate = useCallback(async (data, { setFieldError }) => {
-        console.log(data)
         const Stages = Object.entries(data.Stages).filter(([_, stage]) => stage).reduce((acc, [key, stage]) => {
-            acc[key] = stage
+            acc[key] = {
+                ...stage,
+                MoneyGoal: Number(stage.MoneyGoal)
+            }
             return acc
         }, [])
 
@@ -94,8 +106,26 @@ export default function NewDealPage() {
 
         const Images = await Promise.all(fileList.map(({originFileObj}) => getBase64(originFileObj)))
 
+        const result = await createDeal({
+            ...data,
+            Images,
+            Stages,
+            UserID: user.ID
+        })
 
-    }, [fileList])
+        if (result.error) {
+            setFieldError('general', 'Что-то пошло не так')
+            return
+        }
+
+        navigate('/')
+    }, [createDeal, fileList, navigate, user.ID])
+
+    useEffect(() => {
+        if (!user.IsPromoted) {
+            navigate('/')
+        }
+    }, [navigate, user.IsPromoted])
     
     const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
@@ -150,11 +180,21 @@ export default function NewDealPage() {
                                     id={index}
                                     name={index}
                                     nest="Stages"
+                                    field="Title"
+                                    label='Название этапа'
+                                    placeholder='Название этапа'
+                                    renderComponent={Input}
+                                    maxLength={50}
+                                />
+                                <FieldFormikContext
+                                    id={index}
+                                    name={index}
+                                    nest="Stages"
                                     field="Description"
                                     label='Описание этапа'
                                     placeholder='Описание этапа'
-                                    renderComponent={Input}
-                                    maxLength={50}
+                                    renderComponent={Input.TextArea}
+                                    maxLength={10000}
                                 />
 
                                 <FieldFormikContext

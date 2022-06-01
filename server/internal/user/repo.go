@@ -4,6 +4,7 @@ import (
 	"server/internal/deal"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Repo struct {
@@ -18,7 +19,7 @@ func NewRepository(db *gorm.DB) *Repo {
 
 func (repo *Repo) GetAll() ([]*deal.User, error) {
 	users := []*deal.User{}
-	result := repo.DB.Find(&users)
+	result := repo.DB.Preload(clause.Associations).Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -27,7 +28,7 @@ func (repo *Repo) GetAll() ([]*deal.User, error) {
 
 func (repo *Repo) GetByID(id uint) (*deal.User, error) {
 	user := &deal.User{}
-	err := repo.DB.First(&user, "id = ?", id).Error
+	err := repo.DB.Preload(clause.Associations).First(&user, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +37,7 @@ func (repo *Repo) GetByID(id uint) (*deal.User, error) {
 
 func (repo *Repo) GetByLogin(login string) (*deal.User, error) {
 	user := &deal.User{}
-	err := repo.DB.First(&user, "login = ?", login).Error
+	err := repo.DB.Preload(clause.Associations).First(&user, "login = ?", login).Error
 	if err != nil {
 		return nil, err
 	}

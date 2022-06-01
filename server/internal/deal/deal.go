@@ -50,7 +50,7 @@ type Deal struct {
 	gorm.Model
 	Title       string
 	Description string
-	Images      pq.StringArray `gorm:"type:varchar(10000)[]" json:"Images"`
+	Images      pq.StringArray `gorm:"type:varchar(10485760)[]" json:"Images"`
 	IsStarted   bool
 	IsApproved  bool
 	IsFrozen    bool
@@ -69,13 +69,14 @@ type Investment struct {
 	gorm.Model
 	DealID uint
 	UserID uint
-	amount float64
+	Amount float64
 }
 
 type Rate struct {
 	gorm.Model
 	DealID uint
 	UserID uint
+	Rate   uint
 }
 
 type Approve struct {
@@ -94,15 +95,16 @@ type Stage struct {
 	IsFinished           bool
 	Title                string
 	Description          string
-	Images               pq.StringArray `gorm:"type:varchar(10000)[]" json:"Images"`
-	SubmitionImages      pq.StringArray `gorm:"type:varchar(10000)[]" json:"SubmitionImages"`
+	FinishDate           string
+	Images               pq.StringArray `gorm:"type:varchar(10485760)[]" json:"Images"`
+	SubmitionImages      pq.StringArray `gorm:"type:varchar(10485760)[]" json:"SubmitionImages"`
 	SubmitionDescription string
 }
 
 type Comment struct {
 	gorm.Model
 	Text   string
-	Images pq.StringArray `gorm:"type:varchar(10000)[]" json:"Images"`
+	Images pq.StringArray `gorm:"type:varchar(10485760)[]" json:"Images"`
 	DealID uint
 	UserID uint
 }

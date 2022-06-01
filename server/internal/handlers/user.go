@@ -158,9 +158,11 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	u, err := h.UserRepo.Create(user.RawUserToUser(&rawUser))
 
 	if err == user.ErrLoginExists {
+		fmt.Print(err.Error())
 		http.Error(w, `Login already exists`, http.StatusBadRequest)
 		return
 	} else if err != nil {
+		fmt.Print(err.Error())
 		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
 		return
 	}

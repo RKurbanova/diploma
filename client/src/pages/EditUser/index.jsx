@@ -52,7 +52,7 @@ export default function EditUserPage({user: currentUser}) {
     const {id} = useParams()
     const navigate = useNavigate()
 
-    const canSee = currentUser.ID === id || currentUser.Role === 2
+    const canSee = currentUser.ID === Number(id) || currentUser.Role === 2
     console.log('can', canSee, currentUser.ID, id, currentUser.Role)
 
     
@@ -67,8 +67,11 @@ export default function EditUserPage({user: currentUser}) {
         
         if (result.error) {
             setFieldError('general', 'Что-то пошло не так')
+            return
         }
-    }, [updateUser])
+
+        navigate(-1)
+    }, [navigate, updateUser])
     
     if (!canSee) {
         return <div style={{padding: '10px', color: 'red'}}>У вас нет доступа к этой странице</div>
