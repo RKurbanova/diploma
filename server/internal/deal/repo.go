@@ -2,6 +2,7 @@ package deal
 
 import (
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Repo struct {
@@ -21,35 +22,40 @@ func NewRepository(db *gorm.DB) *Repo {
 
 func (repo *Repo) GetAll() ([]*Deal, error) {
 	deals := make([]*Deal, 0, 10)
-	err := repo.DB.Find(&deals).Error
+	err := repo.DB.Preload(clause.Associations).Find(&deals).Error
 	if err != nil {
 		return nil, err
 	}
 	return deals, nil
 }
 
-func (repo *Repo) GetByID(id int64) (*Deal, error) {
+func (repo *Repo) GetByID(id uint) (*Deal, error) {
 	deal := &Deal{}
-	err := repo.DB.First(&deal, "id = ?", id).Error
+	err := repo.DB.Preload(clause.Associations).First(&deal, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
 	return deal, nil
 }
 
-func (repo *Repo) Create(elem *Deal) (int64, error) {
+func (repo *Repo) Create(elem *Deal) (uint, error) {
 	err := repo.DB.Create(elem).Error
 	if err != nil {
 		return 0, err
 	}
-	return int64(elem.ID), nil
+	return elem.ID, nil
 }
 
-func (repo *Repo) Update(elem *Deal) (int64, error) {
-	res := repo.DB.Model(&elem).Updates(map[string]interface{}{
-		"title":       elem.Title,
-		"description": elem.Description,
-	})
+func (repo *Repo) UpdateStage(elem *Stage, toUpdate []string) (int64, error) {
+	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
+	if res.Error != nil {
+		return 0, res.Error
+	}
+	return res.RowsAffected, nil
+}
+
+func (repo *Repo) Update(elem *Deal, toUpdate []string) (int64, error) {
+	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
 	}

@@ -1,0 +1,12 @@
+.dealsList {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+    width: 100%;
+}
+
+.dealsList .smallDealCard {
+    width: calc((100% - 48px)/3);
+}
+

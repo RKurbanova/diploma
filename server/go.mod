@@ -5,6 +5,7 @@ go 1.17
 require gorm.io/gorm v1.23.5
 
 require (
+	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect

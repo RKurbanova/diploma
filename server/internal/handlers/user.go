@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -15,6 +18,10 @@ import (
 type UserHandler struct {
 	UserRepo *user.Repo
 	Sessions *session.Manager
+}
+
+type ToUpdate struct {
+	FieldsToUpdate []string
 }
 
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -73,17 +80,33 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	decoder := json.NewDecoder(r.Body)
+	data, err := ioutil.ReadAll(r.Body)
+	reader1 := bytes.NewReader(data)
+	reader2 := bytes.NewReader(data)
+
+	decoder1 := json.NewDecoder(reader1)
+	decoder2 := json.NewDecoder(reader2)
 	var user deal.User
-	err = decoder.Decode(&user)
+
+	err = decoder1.Decode(&user)
 	if err != nil {
 		http.Error(w, `Bad data`, http.StatusBadRequest)
+		return
+	}
+	var toUpdate ToUpdate
+
+	err = decoder2.Decode(&toUpdate)
+
+	fmt.Print(toUpdate.FieldsToUpdate)
+
+	if err != nil {
+		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
 		return
 	}
 
 	user.ID = uint(id)
 
-	u, err := h.UserRepo.Update(&user)
+	u, err := h.UserRepo.Update(&user, toUpdate.FieldsToUpdate)
 
 	if err != nil {
 		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
@@ -135,9 +158,11 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	u, err := h.UserRepo.Create(user.RawUserToUser(&rawUser))
 
 	if err == user.ErrLoginExists {
+		fmt.Print(err.Error())
 		http.Error(w, `Login already exists`, http.StatusBadRequest)
 		return
 	} else if err != nil {
+		fmt.Print(err.Error())
 		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
 		return
 	}
