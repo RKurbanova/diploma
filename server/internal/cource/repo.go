@@ -1,4 +1,4 @@
-package deal
+package cource
 
 import (
 	"gorm.io/gorm"
@@ -10,35 +10,33 @@ type Repo struct {
 }
 
 func NewRepository(db *gorm.DB) *Repo {
-	db.AutoMigrate(&Deal{})
-	db.AutoMigrate(&Approve{})
+	db.AutoMigrate(&Cource{})
 	db.AutoMigrate(&Rate{})
+	db.AutoMigrate(&Lesson{})
 	db.AutoMigrate(&Comment{})
-	db.AutoMigrate(&Stage{})
-	db.AutoMigrate(&Investment{})
 
 	return &Repo{DB: db}
 }
 
-func (repo *Repo) GetAll() ([]*Deal, error) {
-	deals := make([]*Deal, 0, 10)
-	err := repo.DB.Preload(clause.Associations).Find(&deals).Error
+func (repo *Repo) GetAll() ([]*Cource, error) {
+	cources := make([]*Cource, 0, 10)
+	err := repo.DB.Preload(clause.Associations).Find(&cources).Error
 	if err != nil {
 		return nil, err
 	}
-	return deals, nil
+	return cources, nil
 }
 
-func (repo *Repo) GetByID(id uint) (*Deal, error) {
-	deal := &Deal{}
-	err := repo.DB.Preload(clause.Associations).First(&deal, "id = ?", id).Error
+func (repo *Repo) GetByID(id uint) (*Cource, error) {
+	cource := &Cource{}
+	err := repo.DB.Preload(clause.Associations).First(&cource, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
-	return deal, nil
+	return cource, nil
 }
 
-func (repo *Repo) Create(elem *Deal) (uint, error) {
+func (repo *Repo) Create(elem *Cource) (uint, error) {
 	err := repo.DB.Create(elem).Error
 	if err != nil {
 		return 0, err
@@ -46,7 +44,7 @@ func (repo *Repo) Create(elem *Deal) (uint, error) {
 	return elem.ID, nil
 }
 
-func (repo *Repo) UpdateStage(elem *Stage, toUpdate []string) (int64, error) {
+func (repo *Repo) Update(elem *Cource, toUpdate []string) (int64, error) {
 	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
@@ -54,7 +52,7 @@ func (repo *Repo) UpdateStage(elem *Stage, toUpdate []string) (int64, error) {
 	return res.RowsAffected, nil
 }
 
-func (repo *Repo) Update(elem *Deal, toUpdate []string) (int64, error) {
+func (repo *Repo) UpdateLesson(elem *Lesson, toUpdate []string) (int64, error) {
 	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
@@ -63,7 +61,7 @@ func (repo *Repo) Update(elem *Deal, toUpdate []string) (int64, error) {
 }
 
 func (repo *Repo) Delete(id int64) (int64, error) {
-	res := repo.DB.Delete(&Deal{}, id)
+	res := repo.DB.Delete(&Cource{}, id)
 	if res.Error != nil {
 		return 0, res.Error
 	}

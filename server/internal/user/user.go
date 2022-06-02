@@ -2,7 +2,7 @@ package user
 
 import (
 	"errors"
-	"server/internal/deal"
+	"server/internal/cource"
 )
 
 const (
@@ -11,8 +11,8 @@ const (
 	ADMIN_ROLE     = iota
 )
 
-func RawUserToUser(rawUser *deal.RawUser) *deal.User {
-	return &deal.User{
+func RawUserToUser(rawUser *cource.RawUser) *cource.User {
+	return &cource.User{
 		Login:      rawUser.Login,
 		Password:   rawUser.Password,
 		FirstName:  rawUser.FirstName,
@@ -32,7 +32,7 @@ var (
 	ErrLoginExists = errors.New("Login exists")
 )
 
-func (repo *Repo) Authorize(login, pass string) (*deal.User, error) {
+func (repo *Repo) Authorize(login, pass string) (*cource.User, error) {
 	user, err := repo.GetByLogin(login)
 
 	if err != nil || user.IsBlocked {

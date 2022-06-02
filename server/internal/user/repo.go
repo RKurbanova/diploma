@@ -1,7 +1,7 @@
 package user
 
 import (
-	"server/internal/deal"
+	"server/internal/cource"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -12,13 +12,13 @@ type Repo struct {
 }
 
 func NewRepository(db *gorm.DB) *Repo {
-	db.AutoMigrate(&deal.User{})
+	db.AutoMigrate(&cource.User{})
 
 	return &Repo{DB: db}
 }
 
-func (repo *Repo) GetAll() ([]*deal.User, error) {
-	users := []*deal.User{}
+func (repo *Repo) GetAll() ([]*cource.User, error) {
+	users := []*cource.User{}
 	result := repo.DB.Preload(clause.Associations).Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
@@ -26,8 +26,8 @@ func (repo *Repo) GetAll() ([]*deal.User, error) {
 	return users, nil
 }
 
-func (repo *Repo) GetByID(id uint) (*deal.User, error) {
-	user := &deal.User{}
+func (repo *Repo) GetByID(id uint) (*cource.User, error) {
+	user := &cource.User{}
 	err := repo.DB.Preload(clause.Associations).First(&user, "id = ?", id).Error
 	if err != nil {
 		return nil, err
@@ -35,8 +35,8 @@ func (repo *Repo) GetByID(id uint) (*deal.User, error) {
 	return user, nil
 }
 
-func (repo *Repo) GetByLogin(login string) (*deal.User, error) {
-	user := &deal.User{}
+func (repo *Repo) GetByLogin(login string) (*cource.User, error) {
+	user := &cource.User{}
 	err := repo.DB.Preload(clause.Associations).First(&user, "login = ?", login).Error
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (repo *Repo) GetByLogin(login string) (*deal.User, error) {
 	return user, nil
 }
 
-func (repo *Repo) Create(user *deal.User) (*deal.User, error) {
+func (repo *Repo) Create(user *cource.User) (*cource.User, error) {
 	u, err := repo.GetByLogin(user.Login)
 
 	if u != nil {
@@ -60,7 +60,7 @@ func (repo *Repo) Create(user *deal.User) (*deal.User, error) {
 	return user, nil
 }
 
-func (repo *Repo) Update(elem *deal.User, toUpdate []string) (int64, error) {
+func (repo *Repo) Update(elem *cource.User, toUpdate []string) (int64, error) {
 	res := repo.DB.Model(&elem).Select(toUpdate).Updates(elem)
 	if res.Error != nil {
 		return 0, res.Error
@@ -69,7 +69,7 @@ func (repo *Repo) Update(elem *deal.User, toUpdate []string) (int64, error) {
 }
 
 func (repo *Repo) Delete(id uint) (int64, error) {
-	res := repo.DB.Delete(&deal.User{}, id)
+	res := repo.DB.Delete(&cource.User{}, id)
 	if res.Error != nil {
 		return 0, res.Error
 	}

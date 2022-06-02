@@ -8,7 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"server/internal/deal"
+	"server/internal/cource"
 	"server/internal/handlers"
 	"server/internal/middleware"
 	"server/internal/session"
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	DB_NAME = "crowdfunding1"
+	DB_NAME = "cources"
 	PORT    = 3001
 )
 
@@ -47,15 +47,15 @@ func main() {
 	sm := session.NewManager(sessRepo)
 
 	userRepo := user.NewRepository(db)
-	dealRepo := deal.NewRepository(db)
+	courceRepo := cource.NewRepository(db)
 
 	userHandler := &handlers.UserHandler{
 		UserRepo: userRepo,
 		Sessions: sm,
 	}
 
-	dealHandler := &handlers.DealHandler{
-		DealRepo: dealRepo,
+	courceHandler := &handlers.CourceHandler{
+		CourceRepo: courceRepo,
 	}
 
 	r := mux.NewRouter()
@@ -71,23 +71,11 @@ func main() {
 	r.HandleFunc("/register", userHandler.Register).Methods("POST")
 	r.HandleFunc("/logout", userHandler.Logout).Methods("POST")
 
-	r.HandleFunc("/deals", dealHandler.List).Methods("GET")
-	r.HandleFunc("/deal/new", dealHandler.Create).Methods("POST")
-	r.HandleFunc("/deal/{id}", dealHandler.Update).Methods("POST")
-	r.HandleFunc("/stage/{id}", dealHandler.UpdateStage).Methods("POST")
-	r.HandleFunc("/deal/{id}", dealHandler.GetByID).Methods("GET")
-	// r.HandleFunc("/deal/{id}/comment", dealHandler.Comment).Methods("POST")
-	// r.HandleFunc("/deal/{id}/approve", dealHandler.Approve).Methods("POST")
-	// r.HandleFunc("/deal/{id}/start", dealHandler.Start).Methods("POST")
-	// r.HandleFunc("/deal/{id}/freeze", dealHandler.Freeze).Methods("POST")
-	// r.HandleFunc("/deal/{id}/cancel", dealHandler.Cancel).Methods("POST")
-	// r.HandleFunc("/deal/{id}/finish", dealHandler.Finish).Methods("POST")
-	// r.HandleFunc("/deal/{id}/invest", dealHandler.Invest).Methods("POST")
-	// r.HandleFunc("/deal/{id}/insert_profit", dealHandler.InsertProfit).Methods("POST")
-	// r.HandleFunc("/deal/{id}/stage/{stageId}/submit", dealHandler.StageSubmit).Methods("POST")
-	// r.HandleFunc("/deal/{id}/stage/{stageId}", dealHandler.StageUpdate).Methods("POST")
-	// r.HandleFunc("/deal/{id}/stage/{stageId}/approve", dealHandler.StageApprove).Methods("POST")
-	// r.HandleFunc("/deal/{id}/stage/{stageId}/finish", dealHandler.StageFinish).Methods("POST")
+	r.HandleFunc("/cources", courceHandler.List).Methods("GET")
+	r.HandleFunc("/cource/new", courceHandler.Create).Methods("POST")
+	r.HandleFunc("/cource/{id}", courceHandler.Update).Methods("POST")
+	r.HandleFunc("/lesson/{id}", courceHandler.UpdateLesson).Methods("POST")
+	r.HandleFunc("/cource/{id}", courceHandler.GetByID).Methods("GET")
 
 	router := middleware.Auth(sm, r)
 	router = middleware.Panic(router)

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"server/internal/deal"
+	"server/internal/cource"
 	"server/internal/session"
 	"server/internal/user"
 
@@ -86,7 +86,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	decoder1 := json.NewDecoder(reader1)
 	decoder2 := json.NewDecoder(reader2)
-	var user deal.User
+	var user cource.User
 
 	err = decoder1.Decode(&user)
 	if err != nil {
@@ -118,7 +118,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var rawUser deal.RawUser
+	var rawUser cource.RawUser
 	err := decoder.Decode(&rawUser)
 	if err != nil {
 		http.Error(w, `Bad data`, http.StatusBadRequest)
@@ -148,7 +148,7 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var rawUser deal.RawUser
+	var rawUser cource.RawUser
 	err := decoder.Decode(&rawUser)
 	if err != nil {
 		http.Error(w, `Bad data`, http.StatusBadRequest)

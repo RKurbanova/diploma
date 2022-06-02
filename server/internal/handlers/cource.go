@@ -9,18 +9,18 @@ import (
 	"net/http"
 	"strconv"
 
-	"server/internal/deal"
+	"server/internal/cource"
 
 	"github.com/gorilla/mux"
 )
 
-type DealHandler struct {
-	Tmpl     *template.Template
-	DealRepo *deal.Repo
+type CourceHandler struct {
+	Tmpl       *template.Template
+	CourceRepo *cource.Repo
 }
 
-func (h *DealHandler) List(w http.ResponseWriter, r *http.Request) {
-	elems, err := h.DealRepo.GetAll()
+func (h *CourceHandler) List(w http.ResponseWriter, r *http.Request) {
+	elems, err := h.CourceRepo.GetAll()
 
 	if err != nil {
 		http.Error(w, `DB err`, http.StatusInternalServerError)
@@ -30,7 +30,7 @@ func (h *DealHandler) List(w http.ResponseWriter, r *http.Request) {
 	SendJSONResponse(w, elems)
 }
 
-func (h *DealHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+func (h *CourceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -38,7 +38,7 @@ func (h *DealHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := h.DealRepo.GetByID(uint(id))
+	u, err := h.CourceRepo.GetByID(uint(id))
 
 	if err != nil {
 		http.Error(w, `Bad request`, http.StatusBadRequest)
@@ -48,17 +48,17 @@ func (h *DealHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	SendJSONResponse(w, u)
 }
 
-func (h *DealHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *CourceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var deal deal.Deal
-	err := decoder.Decode(&deal)
+	var cource cource.Cource
+	err := decoder.Decode(&cource)
 	if err != nil {
 		print("whyy", err.Error())
 		http.Error(w, `Bad data`, http.StatusBadRequest)
 		return
 	}
 
-	id, err := h.DealRepo.Create(&deal)
+	id, err := h.CourceRepo.Create(&cource)
 	if err != nil {
 		print("whyy", err.Error())
 		http.Error(w, `DB err`, http.StatusInternalServerError)
@@ -69,7 +69,7 @@ func (h *DealHandler) Create(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h *DealHandler) UpdateStage(w http.ResponseWriter, r *http.Request) {
+func (h *CourceHandler) Update(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -83,9 +83,9 @@ func (h *DealHandler) UpdateStage(w http.ResponseWriter, r *http.Request) {
 
 	decoder1 := json.NewDecoder(reader1)
 	decoder2 := json.NewDecoder(reader2)
-	var stage deal.Stage
+	var cource cource.Cource
 
-	err = decoder1.Decode(&stage)
+	err = decoder1.Decode(&cource)
 	if err != nil {
 		http.Error(w, `Bad data`, http.StatusBadRequest)
 		return
@@ -101,9 +101,9 @@ func (h *DealHandler) UpdateStage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	stage.ID = uint(id)
+	cource.ID = uint(id)
 
-	u, err := h.DealRepo.UpdateStage(&stage, toUpdate.FieldsToUpdate)
+	u, err := h.CourceRepo.Update(&cource, toUpdate.FieldsToUpdate)
 
 	if err != nil {
 		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
@@ -112,7 +112,8 @@ func (h *DealHandler) UpdateStage(w http.ResponseWriter, r *http.Request) {
 
 	SendJSONResponse(w, u)
 }
-func (h *DealHandler) Update(w http.ResponseWriter, r *http.Request) {
+
+func (h *CourceHandler) UpdateLesson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
@@ -126,9 +127,9 @@ func (h *DealHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	decoder1 := json.NewDecoder(reader1)
 	decoder2 := json.NewDecoder(reader2)
-	var deal deal.Deal
+	var lesson cource.Lesson
 
-	err = decoder1.Decode(&deal)
+	err = decoder1.Decode(&lesson)
 	if err != nil {
 		http.Error(w, `Bad data`, http.StatusBadRequest)
 		return
@@ -144,9 +145,9 @@ func (h *DealHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	deal.ID = uint(id)
+	lesson.ID = uint(id)
 
-	u, err := h.DealRepo.Update(&deal, toUpdate.FieldsToUpdate)
+	u, err := h.CourceRepo.UpdateLesson(&lesson, toUpdate.FieldsToUpdate)
 
 	if err != nil {
 		http.Error(w, `InternalServerError`, http.StatusInternalServerError)
