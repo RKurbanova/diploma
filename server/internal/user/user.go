@@ -20,9 +20,6 @@ func RawUserToUser(rawUser *cource.RawUser) *cource.User {
 		Patronymic: rawUser.Patronymic,
 		Email:      rawUser.Email,
 		Birthday:   rawUser.Birthday,
-		Phone:      rawUser.Phone,
-		Passport:   rawUser.Passport,
-		Balance:    rawUser.Balance,
 	}
 }
 
@@ -35,7 +32,7 @@ var (
 func (repo *Repo) Authorize(login, pass string) (*cource.User, error) {
 	user, err := repo.GetByLogin(login)
 
-	if err != nil || user.IsBlocked {
+	if err != nil {
 		return nil, ErrNoUser
 	}
 
