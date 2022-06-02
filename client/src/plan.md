@@ -1,8 +1,0 @@
-- login
-- registration
-- profile
-- header
-- admin
-- moderator
-- catalog
-- deal
