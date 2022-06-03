@@ -52,7 +52,8 @@ const App = () => {
 
   const handleLogout = useCallback(async () => {
     await logout({})
-    router.push('/')
+    // eslint-disable-next-line no-restricted-globals
+    history.push('/')
   }, [logout, router])
 
   if (isLoading) {

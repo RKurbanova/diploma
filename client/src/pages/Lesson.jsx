@@ -40,7 +40,7 @@ const Lesson = ({user}) => {
       </IonHeader>
       <IonContent fullscreen>
         {lesson.Description}
-        <video width="100%" controls type="video/mp4" />
+        <video src={lesson.Videos[0]} width="100%" controls type="video/mp4" />
       </IonContent>
     </IonPage>
   );

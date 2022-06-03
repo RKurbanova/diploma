@@ -9,15 +9,6 @@ import { useCallback } from 'react'
  
 import { Button, Input, Form, Space, Spin } from "antd";
 import FieldFormikContext from "../components/FieldFormWithContext";
-import {
-    IonSpinner,
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonPage,
-    useIonRouter
-} from "@ionic/react";
 
 const allowedBirthDate = new Date()
 allowedBirthDate.setFullYear(allowedBirthDate.getFullYear() - 18)

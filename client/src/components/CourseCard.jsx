@@ -1,39 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonButton, IonProgressBar, IonItem, IonList, IonImg, IonLabel, IonThumbnail} from '@ionic/react';
 import { pin, wifi, wine, warning, walk } from 'ionicons/icons';
 import './CourseCard.css'
-
-const items = [{ src: 'http://placekitten.com/g/200/300'}];
   
-export const CourseCard = () => {
+export const CourceCard = ({cource}) => {
+  const touched = Boolean(localStorage.getItem(cource.ID)) || false
+
   return (
       <>
         <IonCard>
           <IonCardHeader>
-            <IonCardSubtitle>разработка</IonCardSubtitle>
-            <div class='flex-centr'>
-            <IonCardTitle>Мобильная разработка</IonCardTitle>
+            <div className='flex-centr'>
+            <IonCardTitle>{cource.Title}</IonCardTitle>
                 <IonThumbnail style={{'--size': '100px'}} slot="start">
-                    <IonImg src={items[0].src} />
+                    <IonImg src={cource.Images[0]} />
                 </IonThumbnail>
             </div>
           </IonCardHeader>
           <IonCardContent>
-            Курс про мобильную разработку, курс про мобильную разработку, курс про мобильную разработку
+            {cource.Description}
           </IonCardContent>
-          <div class='flex-centr'>
+          <div className='flex-centr'>
             <IonCardContent>
                     50%
             </IonCardContent>
             <IonCardContent>
-                    *stars*
+                    рейтинг 0/5
             </IonCardContent>
           </div>
         <IonProgressBar style={{'--progress-background': '#6D54DE'}} value={0.5}></IonProgressBar><br />
         <IonCardContent>
-            <div class='flex-centr'>
-                <IonButton style={{'--background': '#6D54DE'}}>Начать</IonButton>
-                <IonButton style={{'--background': '#6D54DE'}}>Смотреть</IonButton>
+            <div className='flex-centr'>
+              {touched ? <IonButton href={`/cource/${cource.ID}`} style={{'--background': '#6D54DE'}}>Смотреть</IonButton> : <IonButton href={`/cource/${cource.ID}`} style={{'--background': '#6D54DE'}}>Начать</IonButton>}
             </div>
         </IonCardContent>
         </IonCard>
