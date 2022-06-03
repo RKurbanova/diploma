@@ -11,6 +11,7 @@ var (
 	noAuthUrls = map[string]struct{}{
 		"/login":    {},
 		"/register": {},
+		"/cources":  {},
 	}
 	noSessUrls = map[string]struct{}{
 		"/": {},

@@ -20,7 +20,7 @@ func NewRepository(db *gorm.DB) *Repo {
 
 func (repo *Repo) GetAll() ([]*Cource, error) {
 	cources := make([]*Cource, 0, 10)
-	err := repo.DB.Preload(clause.Associations).Find(&cources).Error
+	err := repo.DB.Preload("Rates").Find(&cources).Error
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +29,20 @@ func (repo *Repo) GetAll() ([]*Cource, error) {
 
 func (repo *Repo) GetByID(id uint) (*Cource, error) {
 	cource := &Cource{}
-	err := repo.DB.Preload(clause.Associations).First(&cource, "id = ?", id).Error
+	err := repo.DB.Preload("Rates").First(&cource, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
 	return cource, nil
+}
+
+func (repo *Repo) GetLessonByID(id uint) (*Lesson, error) {
+	lesson := &Lesson{}
+	err := repo.DB.Preload(clause.Associations).First(&lesson, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+	return lesson, nil
 }
 
 func (repo *Repo) Create(elem *Cource) (uint, error) {

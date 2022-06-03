@@ -1,40 +1,29 @@
-import { PropsWithChildren, useCallback, useState } from 'react';
 import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonPage,
-  useIonRouter,
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonNavLink
-} from '@ionic/react';
+    useParams,
+    useNavigate
+} from "react-router-dom";
+import { usePostUpdateUserMutation, useGetUserByIdQuery } from '../queries/user'
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, Input, Form, Space } from "antd";
-import { usePostRegisterMutation } from '../queries/user';
-import FieldFormikContext from '../components/FieldFormWithContext'
-import { Formik } from 'formik'
+import { useCallback } from 'react'
  
-import './register.css'
-import { Link } from 'react-router-dom';
+import { Button, Input, Form, Space, Spin } from "antd";
+import FieldFormikContext from "../components/FieldFormWithContext";
+import {
+    IonSpinner,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonPage,
+    useIonRouter
+} from "@ionic/react";
 
 const allowedBirthDate = new Date()
 allowedBirthDate.setFullYear(allowedBirthDate.getFullYear() - 18)
 const birthDateRegExp = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/
 
-const SignupSchema = Yup.object().shape({
-    Login: Yup.string()
-        .min(2, 'Логин очень короткий')
-        .max(50, 'Логин очень длинный')
-        .required('Логин обязателен'),
-    Password: Yup.string()
-        .min(2, 'Пароль очень короткий')
-        .max(50, 'Пароль очень длинный')
-        .matches(/[a-zA-Z0-1]/, 'Пароль может содержать только латинские буквы и цифры')
-        .required('Пароль обязателен'),
+const EditSchema = Yup.object().shape({
     FirstName: Yup.string()
         .min(2, 'Имя очень короткое')
         .max(50, 'Имя очень длинное')
@@ -61,57 +50,33 @@ const SignupSchema = Yup.object().shape({
         .required('Дата обязательна')
 });
 
-const Register = () => {
-  const router = useIonRouter()
-  const [register] = usePostRegisterMutation()
-  const handleRegister = useCallback(async (data, { setFieldError }) => {
-    const result = await register(data)
+export default function ProfileEdit({user, setIsEdit}) {
+    const [updateUser] = usePostUpdateUserMutation()
+    
+    const handleEdit = useCallback(async (data, { setFieldError }) => {
+        const result = await updateUser(data)
+        
+        if (result.error) {
+            setFieldError('general', 'Что-то пошло не так')
+            return
+        }
 
-    if (result.error) {
-        setFieldError('general', 'Пользователь с такими данными уже существует')
-        return
-    }
+        setIsEdit(false)
+    }, [setIsEdit, updateUser])
 
-    router.push('/catalog')
-  }, [register, router])
-
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Регистрация</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
+    return (
+        <Space direction="vertical" style={{padding: '20px', width: '100%'}}>
         <Formik
-              validateOnBlur
-              initialValues={SignupSchema.cast()}
-              validationSchema={SignupSchema}
-              onSubmit={handleRegister}
-          >
-              {({ handleSubmit, isSubmitting, isValid, dirty, errors, values }) => (
-                <Space style={{padding: '20px', width: '100vw'}}>
-                  <Form
+            initialValues={user}
+            validationSchema={EditSchema}
+            onSubmit={handleEdit}
+        >
+            {({ handleSubmit, isSubmitting, isValid, dirty, errors }) => (
+                <Form
                     className="register-form"
                     onFinish={handleSubmit}
                     layout='vertical'
                 >
-                    <FieldFormikContext
-                        id="Login"
-                        name="Login"
-                        label='Логин'
-                        placeholder='Введите логин'
-                        renderComponent={Input}
-                        maxLength={50}
-                    />
-                    <FieldFormikContext
-                        id="Password"
-                        name="Password"
-                        label='Пароль'
-                        placeholder='Введите пароль'
-                        renderComponent={Input.Password}
-                        maxLength={50}
-                    />
                     <FieldFormikContext
                         id="FirstName"
                         name="FirstName"
@@ -152,22 +117,20 @@ const Register = () => {
                     />
 
                     {errors.general ? <p style={{ color: 'red' }}>{errors.general}</p> : null}
-                    <Button
-                        type='primary'
-                        htmlType='submit'
-                        loading={isSubmitting}
-                        disabled={!(dirty && isValid)}
-                    >
-                        Зарегистрировать
-                    </Button>
-                    <Link to="/login">Уже есть аккаунт?</Link>
+                    <Space>
+                        <Button type='danger' onClick={() => setIsEdit(false)}>Отмена</Button>
+                        <Button
+                            type='primary'
+                            htmlType='submit'
+                            loading={isSubmitting}
+                            disabled={!(dirty && isValid)}
+                        >
+                            Изменить
+                        </Button>
+                    </Space>
                 </Form>
-                </Space>
-              )}
+            )}
         </Formik>
-      </IonContent>
-    </IonPage>
-  );
-};
-
-export default Register;
+    </Space>
+    )
+}

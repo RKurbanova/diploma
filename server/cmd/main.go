@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	DB_NAME = "cources"
+	DB_NAME = "courcess"
 	PORT    = 3001
 )
 
@@ -74,6 +74,7 @@ func main() {
 	r.HandleFunc("/cources", courceHandler.List).Methods("GET")
 	r.HandleFunc("/cource/new", courceHandler.Create).Methods("POST")
 	r.HandleFunc("/cource/{id}", courceHandler.Update).Methods("POST")
+	r.HandleFunc("/lesson/{id}", courceHandler.GetLessonByID).Methods("GET")
 	r.HandleFunc("/lesson/{id}", courceHandler.UpdateLesson).Methods("POST")
 	r.HandleFunc("/cource/{id}", courceHandler.GetByID).Methods("GET")
 

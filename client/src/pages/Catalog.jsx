@@ -16,7 +16,6 @@ const Catalog = ({user, cources}) => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        anything
       </IonContent>
     </IonPage>
   );

@@ -50,7 +50,7 @@ type Lesson struct {
 	CourceID    uint
 	Title       string
 	Description string
-	Videos      pq.ByteaArray  `gorm:"type:bytea[]" json:"Videos"`
+	Videos      pq.StringArray `gorm:"type:varchar(10485760)[]" json:"Videos"`
 	Images      pq.StringArray `gorm:"type:varchar(10485760)[]" json:"Images"`
 	Comments    []*Comment
 }

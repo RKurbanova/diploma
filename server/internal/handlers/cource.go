@@ -48,6 +48,24 @@ func (h *CourceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	SendJSONResponse(w, u)
 }
 
+func (h *CourceHandler) GetLessonByID(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		http.Error(w, `Bad id`, http.StatusBadRequest)
+		return
+	}
+
+	u, err := h.CourceRepo.GetLessonByID(uint(id))
+
+	if err != nil {
+		http.Error(w, `Bad request`, http.StatusBadRequest)
+		return
+	}
+
+	SendJSONResponse(w, u)
+}
+
 func (h *CourceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var cource cource.Cource

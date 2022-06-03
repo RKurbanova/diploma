@@ -2,6 +2,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonLoading, IonMenu, IonMenuToggle, IonRouterOutlet, IonSpinner, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar, setupIonicReact, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { beerOutline } from 'ionicons/icons';
+import 'antd/dist/antd.css';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -22,7 +23,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import Catalog from './pages/Catalog';
-import { useGetUserQuery, usePostLoginMutation, usePostLogoutMutation, usePostRegisterMutation } from './queries/user';
+import { useGetUserQuery, usePostLogoutMutation } from './queries/user';
 import { useGetAllCourcesQuery } from './queries/cource';
 import Login from './pages/Login';
 import { useCallback } from 'react';
@@ -32,6 +33,7 @@ import Lesson from './pages/Lesson';
 import Subscriptions from './pages/Subscriptions';
 import CreateCource from './pages/CreateCource';
 import Register from './pages/Register';
+import ProfileEdit from './pages/ProfileEdit';
 
 setupIonicReact();
 
@@ -124,10 +126,10 @@ const App = () => {
               <Route key="profile" path="/profile">
                 <Profile user={user} />
               </Route>,
-              <Route key="/cource/:id" path="/cource/:id">
+              <Route key="/cource/:courceId" path="/cource/:courceId">
                 <Cource user={user} />
               </Route>,
-              <Route key="/cource/:id/lesson/:lessonId" path="/cource/:id/lesson/:lessonId">
+              <Route key="/cource/:courceId/lesson/:lessonId" path="/cource/:courceId/lesson/:lessonId">
                 <Lesson user={user} />
               </Route>,
               <Route key="/user/cources" path="/user/cources">

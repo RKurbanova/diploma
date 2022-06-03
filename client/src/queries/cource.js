@@ -29,6 +29,11 @@ export const courceApi = createApi({
       providesTags: ['GetCource'],
       transformResponse
     }),
+    getLessonById: builder.query({
+      query: ({ID}) => `lesson/${ID}`,
+      providesTags: ['GetCource'],
+      transformResponse
+    }),
     postCreateCource: builder.mutation({
       query: (body) => ({
         url: `cource/new`,
@@ -67,5 +72,6 @@ export const {
   useGetCourceByIdQuery,
   usePostCreateCourceMutation,
   usePostUpdateCourceMutation,
-  usePostUpdateStageMutation
+  usePostUpdateStageMutation,
+  useGetLessonByIdQuery
 } = courceApi
