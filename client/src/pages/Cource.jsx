@@ -77,6 +77,8 @@ const Cource = ({user}) => {
                 onClick={() => {
                   localStorage.setItem('lessons', localStorage.getItem('lessons') ? [...localStorage.getItem('lessons'), lesson.ID]: [lesson.ID] )
                   router.push(`/cource/${courceId}/lesson/${lesson.ID}`)
+                  // eslint-disable-next-line no-restricted-globals
+                  location.reload()
                   }}
                   key={lesson.ID}
                   title={lesson.Title}
