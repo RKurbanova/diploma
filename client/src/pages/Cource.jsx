@@ -8,16 +8,21 @@ import {
   IonSpinner,
   IonThumbnail,
   IonImg,
-  useIonRouter
+  useIonRouter,
+  IonButton
 } from '@ionic/react';
 import { useParams } from 'react-router';
 import { useGetCourceByIdQuery } from '../queries/cource';
-import { Typography, Space,Steps  } from "antd";
+import { Typography, Space,Steps, Button, Input, Avatar, Tooltip, Comment  } from "antd";
 
-const Cource = ({user}) => {
+const { Paragraph } = Typography
+
+const Cource = ({comments, setComments, user, favorites, setFavorites, subscriptions, setSubscriptions}) => {
   const router = useIonRouter()
   const {courceId} = useParams()
   const [lastLesson, setLessons] = useState()
+  const [comment, setComment] = useState('')
+  const curcomments = comments[courceId] || []
 
   const {data: cource, isLoading, isError} = useGetCourceByIdQuery({ ID: courceId })
 
@@ -26,10 +31,10 @@ const Cource = ({user}) => {
         localStorage.setItem(cource.ID, true)
         const lessonsLs = localStorage.getItem('lessons') || []
 
-        const lastLessonID = cource.Lessons.filter((lesson) => lessonsLs.includes(lesson.ID))?.[0]?.ID
+        const lastLessonID = cource.Lessons?.filter((lesson) => lessonsLs.includes(lesson.ID))?.[0]?.ID
 
         if (lastLessonID) {
-          const index = cource.Lessons.findIndex((lesson) => lesson.ID === lastLessonID)
+          const index = cource.Lessons?.findIndex((lesson) => lesson.ID === lastLessonID)
           setLessons(index + 1)
         }
     }
@@ -56,9 +61,19 @@ const Cource = ({user}) => {
       </IonHeader>
       <IonContent fullscreen>
         <Space style={{padding: '20px', width: '100vw'}} direction='vertical'>
+          {favorites.includes(cource.ID)  ?
+            <IonButton onClick={() => setFavorites(favorites.filter(item => item !== cource.ID))} style={{'--background': '#6D54DE'}}>Убрать из избранного</IonButton>
+            :
+            <IonButton onClick={() => setFavorites([...favorites, cource.ID])} style={{'--background': '#6D54DE'}}>Добавить в избранное</IonButton>
+          }
+          {subscriptions.includes(cource.ID)  ?
+            <IonButton onClick={() => setSubscriptions(subscriptions.filter(item => item !== cource.ID))} style={{'--background': '#6D54DE'}}>Убрать из подписок</IonButton>
+            :
+            <IonButton onClick={() => setSubscriptions([...subscriptions, cource.ID])} style={{'--background': '#6D54DE'}}>Добавить в подписки</IonButton>
+          }
           <Space>
             {
-              cource.Images.map((image) => {
+              cource.Images?.map((image) => {
                 return <IonThumbnail style={{'--size': '200px'}} key={image}>
                   <IonImg src={image} />
                 </IonThumbnail>
@@ -71,7 +86,7 @@ const Cource = ({user}) => {
 
           <Space style={{marginTop: '10px'}}>
             <Steps direction="vertical" current={lastLesson || 0}>
-              {cource.Lessons.map((lesson, index) => {
+              {cource.Lessons?.map((lesson, index) => {
                 return <Steps.Step
                 disabled={index > (lastLesson || 0)}
                 onClick={() => {
@@ -86,6 +101,32 @@ const Cource = ({user}) => {
                 />
               })}
             </Steps>
+          </Space>
+
+          <Space style={{marginBottom: '10px'}} direction='vertical'>
+            <Paragraph style={{marginTop: '40px'}}>Комментарии</Paragraph>
+            <Input.TextArea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Комментарий" max={500} />
+            <Button onClick={() => {
+                setComment('')
+                setComments({
+                  ...comments,
+                  [courceId]: [...(comments[courceId] ? comments[courceId] : []), {
+                    Text: comment,
+                    CreatedAt: new Date()
+                  }]
+                })
+            }} loading={isLoading} disabled={isLoading}>
+                Добавить коммент
+            </Button>
+            {curcomments.map(comment => {
+                return  <Comment
+                  avatar={<Avatar />}
+                  content={comment.Text}
+                  datetime={<Tooltip title={new Date(comment.CreatedAt).toLocaleString()}>
+                        <span>{new Date(comment.CreatedAt).toLocaleString()}</span>
+                      </Tooltip>}
+              />
+            })}
           </Space>
         </Space>
       </IonContent>

@@ -1,4 +1,3 @@
-import { PropsWithChildren, useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -6,8 +5,12 @@ import {
   IonToolbar,
   IonPage
 } from '@ionic/react';
+import { CourceCard } from '../components/CourseCard';
+import { Space } from 'antd';
 
-const Subscriptions = ({user}) => {
+const Subscriptions = ({user, favorites, setFavorites, cources, subscriptions, setSubscriptions}) => {
+  const courcesSSSSS = cources.filter(item => subscriptions.includes(item.ID))
+
   return (
     <IonPage>
       <IonHeader>
@@ -16,7 +19,12 @@ const Subscriptions = ({user}) => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        лол
+        {courcesSSSSS.map(cource => {
+          return <CourceCard favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
+        })}
+        <Space>
+          {!courcesSSSSS.length && "Ничего нет в подписках."}
+        </Space>
       </IonContent>
     </IonPage>
   );

@@ -26,11 +26,12 @@ import Catalog from './pages/Catalog';
 import { useGetUserQuery, usePostLogoutMutation } from './queries/user';
 import { useGetAllCourcesQuery } from './queries/cource';
 import Login from './pages/Login';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Profile from './pages/Profile';
 import Cource from './pages/Cource';
 import Lesson from './pages/Lesson';
 import Subscriptions from './pages/Subscriptions';
+import Favorites from './pages/Favorites';
 import CreateCource from './pages/CreateCource';
 import Register from './pages/Register';
 import ProfileEdit from './pages/ProfileEdit';
@@ -44,6 +45,39 @@ const App = () => {
   let {data: user, isLoading: isUserLoading, isError} = useGetUserQuery({})
   const [logout, { isLoading: isLoggingOut }] = usePostLogoutMutation()
 
+  const [comments, setComments] = useState({})
+
+  useEffect(() => {
+    const comments = localStorage.getItem('comments')
+    setComments(comments ? JSON.parse(comments) : {})
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('comments', JSON.stringify(comments))
+  }, [comments])
+
+  const [favorites, setFavorites] = useState([])
+
+  useEffect(() => {
+    const favorites = localStorage.getItem('favorites')
+    setFavorites(favorites ? JSON.parse(favorites) : [])
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+  }, [favorites])
+
+  const [subscriptions, setSubscriptions] = useState([])
+
+  useEffect(() => {
+    const subscriptions = localStorage.getItem('subscriptions')
+    setSubscriptions(subscriptions ? JSON.parse(subscriptions) : [])
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('subscriptions', JSON.stringify(subscriptions))
+  }, [subscriptions])
+
   user = isError ? undefined : user 
   const isLoading = isDealsLoading || isUserLoading || isLoggingOut
 
@@ -53,8 +87,8 @@ const App = () => {
   const handleLogout = useCallback(async () => {
     await logout({})
     // eslint-disable-next-line no-restricted-globals
-    history.push('/')
-  }, [logout, router])
+    location.replace('/login')
+  }, [logout])
 
   if (isLoading) {
     return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
@@ -96,6 +130,10 @@ const App = () => {
                 <IonIcon icon={beerOutline} />
                 <IonLabel>Создать курс</IonLabel>
               </IonTabButton>,
+              <IonTabButton key="user-favorites" tab="user-favorites" href="/user/favorites">
+                <IonIcon icon={beerOutline} />
+                <IonLabel>Избранное</IonLabel>
+              </IonTabButton>,
               <IonTabButton key="user-cources" tab="user-cources" href="/user/cources">
                 <IonIcon icon={beerOutline} />
                 <IonLabel>Подписки</IonLabel>
@@ -111,7 +149,7 @@ const App = () => {
 
       <IonRouterOutlet>
         <Route path="/catalog">
-          <Catalog user={user} cources={cources} />
+          <Catalog favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} user={user} cources={cources} />
         </Route>
         {
           [
@@ -128,17 +166,20 @@ const App = () => {
                 <Profile user={user} />
               </Route>,
               <Route key="/cource/:courceId" path="/cource/:courceId">
-                <Cource user={user} />
+                <Cource comments={comments} setComments={setComments} favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} user={user} />
               </Route>,
               <Route key="/cource/:courceId/lesson/:lessonId" path="/cource/:courceId/lesson/:lessonId">
                 <Lesson user={user} />
               </Route>,
-              <Route key="/user/cources" path="/user/cources">
-                <Subscriptions user={user} />
-              </Route>,
               <Route key="/cource/new" path="/cource/new">
                 <CreateCource user={user} />
-              </Route>
+              </Route>,
+              <Route key="/user/cources" path="/user/cources">
+                <Subscriptions cources={cources} favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} user={user} />
+              </Route>,
+              <Route key="/user/favorites" path="/user/favorites">
+                <Favorites cources={cources} favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} user={user} />
+              </Route>,
             ]: [])
           ]
         }

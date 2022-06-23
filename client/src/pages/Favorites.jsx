@@ -7,22 +7,28 @@ import {
   IonPage
 } from '@ionic/react';
 import { CourceCard } from '../components/CourseCard';
+import { Space } from 'antd';
 
-const Catalog = ({user, cources, favorites, setFavorites, subscriptions, setSubscriptions}) => {
+const Favorites = ({user, favorites, setFavorites, cources, subscriptions, setSubscriptions}) => {
+  const courcesSSSSS = cources.filter(item => favorites.includes(item.ID))
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Каталог</IonTitle>
+          <IonTitle>Избранное</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {cources.map(cource => {
+        {courcesSSSSS.map(cource => {
           return <CourceCard favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
         })}
+        <Space>
+          {!courcesSSSSS.length && "Ничего нет в избранном."}
+        </Space>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Catalog;
+export default Favorites;

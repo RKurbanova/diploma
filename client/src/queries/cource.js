@@ -72,6 +72,5 @@ export const {
   useGetCourceByIdQuery,
   usePostCreateCourceMutation,
   usePostUpdateCourceMutation,
-  usePostUpdateStageMutation,
   useGetLessonByIdQuery
 } = courceApi
