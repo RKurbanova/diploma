@@ -21,7 +21,7 @@ const Favorites = ({user, favorites, setFavorites, cources, subscriptions, setSu
       </IonHeader>
       <IonContent fullscreen>
         {courcesSSSSS.map(cource => {
-          return <CourceCard favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
+          return <CourceCard user={user} favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
         })}
         <Space>
           {!courcesSSSSS.length && "Ничего нет в избранном."}

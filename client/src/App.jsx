@@ -1,7 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonLoading, IonMenu, IonMenuToggle, IonRouterOutlet, IonSpinner, IonTabBar, IonTabButton, IonTabs, IonTitle, IonToolbar, setupIonicReact, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { beerOutline } from 'ionicons/icons';
+import { ellipseOutline } from 'ionicons/icons';
 import 'antd/dist/antd.css';
 
 /* Core CSS required for Ionic components to work properly */
@@ -41,7 +41,7 @@ setupIonicReact();
 const App = () => {
   const router = useIonRouter()
 
-  const {data: cources, isLoading: isDealsLoading} = useGetAllCourcesQuery({})
+  const {data: cources, isLoading: isDealsLoading, isError: isCourcesError, error} = useGetAllCourcesQuery({})
   let {data: user, isLoading: isUserLoading, isError} = useGetUserQuery({})
   const [logout, { isLoading: isLoggingOut }] = usePostLogoutMutation()
 
@@ -96,11 +96,15 @@ const App = () => {
     </div>
   }
 
+  if (isCourcesError) {
+    return <div>произошла ошибкааааааа</div>
+  }
+
   return <IonApp>
     <IonTabs>
       <IonTabBar slot="bottom">
         <IonTabButton tab="catalog" href="/catalog">
-          <IonIcon icon={beerOutline} />
+          <IonIcon icon={ellipseOutline} />
           <IonLabel>Каталог</IonLabel>
         </IonTabButton>
   
@@ -108,11 +112,11 @@ const App = () => {
           !user ?
             [
               <IonTabButton key="login" tab="login" href="/login">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Войти</IonLabel>
               </IonTabButton>,
               <IonTabButton key="register" tab="register" href="/register">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Регистрация</IonLabel>
               </IonTabButton>,
             ]
@@ -123,23 +127,23 @@ const App = () => {
           user ?
             [
               <IonTabButton key="profile" tab="profile" href="/profile">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Профиль</IonLabel>
               </IonTabButton>,
               <IonTabButton key="create-cource" tab="create-cource" href="/cource/new">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Создать курс</IonLabel>
               </IonTabButton>,
               <IonTabButton key="user-favorites" tab="user-favorites" href="/user/favorites">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Избранное</IonLabel>
               </IonTabButton>,
               <IonTabButton key="user-cources" tab="user-cources" href="/user/cources">
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Подписки</IonLabel>
               </IonTabButton>,
               <IonTabButton key="logout" tab="logout" onClick={handleLogout}>
-                <IonIcon icon={beerOutline} />
+                <IonIcon icon={ellipseOutline} />
                 <IonLabel>Выйти</IonLabel>
               </IonTabButton>
             ]

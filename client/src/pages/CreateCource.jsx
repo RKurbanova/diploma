@@ -123,6 +123,8 @@ export default function CreateCourcePage({user}) {
         }
 
         router.push('/')
+        // eslint-disable-next-line no-restricted-globals
+        location.reload()
         resetForm()
         setVideos({})
         setFileList([])
@@ -203,22 +205,22 @@ export default function CreateCourcePage({user}) {
                             ))
                         }
                         {lessonsAmount ? 
-                            <IonButton disabled={isLoading} onClick={() => {
+                            <IonButton type='button' disabled={isLoading} onClick={() => {
                                 setLessonsAmount(lessonsAmount - 1)
                                 setFieldValue(`Lessons.${lessonsAmount - 1}]`, undefined)
                                 setFieldValue(`Lessons.${lessonsAmount - 1}]`, undefined)
                                 setFieldValue(`Lessons.${lessonsAmount - 1}]`, undefined)
                                 delete videos[lessonsAmount - 1]
-                            }} type='primary' style={{marginBottom: '10px', '--background': 'red'}}>
+                            }}style={{marginBottom: '10px', '--background': 'red'}}>
                                 Удалить предыдущий урок
                                 {' '}
                                 <PlusOutlined />
                             </IonButton>
                         : null}
                         
-                        <IonButton disabled={isLoading} onClick={() => {
+                        <IonButton type='button' disabled={isLoading} onClick={() => {
                             setLessonsAmount(lessonsAmount + 1)
-                        }} type='primary'>
+                        }}>
                             Добавить урок
                             {' '}
                             <PlusOutlined />

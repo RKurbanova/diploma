@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	DB_NAME = "courcess"
+	DB_NAME = "courcesssss"
 	PORT    = 3001
 )
 

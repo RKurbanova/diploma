@@ -28,7 +28,7 @@ const Cource = ({comments, setComments, user, favorites, setFavorites, subscript
 
   useEffect(() => {
     if (cource) {
-        localStorage.setItem(cource.ID, true)
+        setSubscriptions([...subscriptions, cource.ID])
         const lessonsLs = localStorage.getItem('lessons') || []
 
         const lastLessonID = cource.Lessons?.filter((lesson) => lessonsLs.includes(lesson.ID))?.[0]?.ID
@@ -61,15 +61,14 @@ const Cource = ({comments, setComments, user, favorites, setFavorites, subscript
       </IonHeader>
       <IonContent fullscreen>
         <Space style={{padding: '20px', width: '100vw'}} direction='vertical'>
-          {favorites.includes(cource.ID)  ?
-            <IonButton onClick={() => setFavorites(favorites.filter(item => item !== cource.ID))} style={{'--background': '#6D54DE'}}>Убрать из избранного</IonButton>
-            :
-            <IonButton onClick={() => setFavorites([...favorites, cource.ID])} style={{'--background': '#6D54DE'}}>Добавить в избранное</IonButton>
-          }
-          {subscriptions.includes(cource.ID)  ?
-            <IonButton onClick={() => setSubscriptions(subscriptions.filter(item => item !== cource.ID))} style={{'--background': '#6D54DE'}}>Убрать из подписок</IonButton>
-            :
-            <IonButton onClick={() => setSubscriptions([...subscriptions, cource.ID])} style={{'--background': '#6D54DE'}}>Добавить в подписки</IonButton>
+          {
+            user ? <>
+              {favorites.includes(cource.ID)  ?
+                <IonButton onClick={() => setFavorites(favorites.filter(item => item !== cource.ID))} style={{'--background': '#6D54DE'}}>Убрать из избранного</IonButton>
+                :
+                <IonButton onClick={() => setFavorites([...favorites, cource.ID])} style={{'--background': '#6D54DE'}}>Добавить в избранное</IonButton>
+              }
+            </>: null
           }
           <Space>
             {

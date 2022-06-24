@@ -17,8 +17,8 @@ const Catalog = ({user, cources, favorites, setFavorites, subscriptions, setSubs
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {cources.map(cource => {
-          return <CourceCard favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
+        {cources?.map(cource => {
+          return <CourceCard user={user} favorites={favorites} setFavorites={setFavorites} subscriptions={subscriptions} setSubscriptions={setSubscriptions} key={cource.ID} cource={cource} />
         })}
       </IonContent>
     </IonPage>
